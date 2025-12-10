@@ -6,220 +6,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Periodic Table</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f7f7f7;
-            margin: 0;
-            padding: 20px;
-        }
-        h1 {
-            text-align: center;
-        }
-        .table-container {
-            display: grid;
-            grid-template-columns: repeat(18, 85px);
-            grid-template-rows: repeat(10, 100px); 
-            grid-gap: 5px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-        .element {
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #03ebc0;
-            text-align: center;
-            padding: 10px;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 80px;
-        }
-        .element:hover {
-            background-color: #c2c2c2; /* Change background color on hover */
-            transform: scale(1.3); /* Scale up on hover */
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Enhanced shadow */
-        }
-        .element .symbol {
-            font-size: 20px;
-            font-weight: bold;
-        }
-        .element .number {
-            font-size: 14px;
-            color: #555;
-        }
-        .element .name {
-            font-size: 12px;
-            color: #777;
-        }
-        #modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            display: none;
-            border-radius: 8px;
-            z-index: 1000;
-            width: 550px !important;
-        }
-        #modal h2 {
-            margin: 0 0 10px;
-        }
-        #modal p {
-            margin: 5px 0;
-        }
-        #modal2 {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            display: none;
-            border-radius: 8px;
-            z-index: 1000;
-            width: 300px;
-        }
-        #modal2 h2 {
-            margin: 0 0 10px;
-        }
-        #modal2 p {
-            margin: 5px 0;
-        }
-        #overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: none;
-            z-index: 999;
-        }
-        #close-modal {
-            background-color: #f44336;
-            color: white;
-            padding: 5px 10px;
-            border: none;
-            cursor: pointer;
-            float: right;
-        }
-        #close-modal:hover {
-            background-color: #d32f2f;
-        }
-        #close-modal2 {
-            background-color: #f44336;
-            color: white;
-            padding: 5px 10px;
-            border: none;
-            cursor: pointer;
-            float: right;
-        }
-        #close-modal2:hover {
-            background-color: #d32f2f;
-        }
-        .category {/* Highlight the category labels */
-            color: #f31313;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            font-weight: bold;
-             /* Make sure it appears above other content */
-        }
-        .pos {
-            position: absolute;
-            top: 190px;
-            left: 335px;
-            z-index: 10;
-        }
-        .pos2{
-            position: absolute;
-            top: 190px;
-            left: 230px;
-            z-index: 10;
-        }
-        .pos3{
-            position: absolute;
-            top: 190px;
-            left: 435px;
-            z-index: 10;
-        }
-        .pos4{
-            position: absolute;
-            top: 190px;
-            left: 615px;
-            z-index: 10;
-        }
-        .pos5{
-            position: absolute;
-            top: 190px;
-            left: 765px;
-            z-index: 10;
-        }
-        .pos6{
-            position: absolute;
-            top: 190px;
-            left: 835px;
-            z-index: 10;
-        }
-        .pos7{
-            position: absolute;
-            top: 300px;
-            left: 230px;
-            z-index: 10;
-        }
-        .pos8{
-            position: absolute;
-            top: 300px;
-            left: 430px;
-            z-index: 10;
-        }
-        .pos9{
-            position: absolute;
-            top: 300px;
-            left: 530px;
-            z-index: 10;
-        }
-        .pos10{
-            position: absolute;
-            top: 300px;
-            left: 650px;
-            z-index: 10;
-        }
-        .pos11{
-            position: absolute;
-            top: 300px;
-            left: 750px;
-            z-index: 10;
-        }
-        input[type="radio"]:checked ~ .nonmetal {
-            border-color: red;
-        }
-        /* Green border for Noble Gas elements */
-        .highlight-noble-gas {
-            border: 5px solid green;
-            z-index: 10;
-        }
 
-
-    </style>
-    <!-- ---------- START: Canvas takeover shim (paste BEFORE loading app-min.js & g9-min.js) ---------- -->
-<!-- jQuery FIRST -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="js/require.js"></script>
 <script src="js/app-min.js"></script>
 <script src="js/g9-min.js"></script>
+<link rel="stylesheet" href="styles.css">
 
-
-<!-- ========== CANVAS OVERRIDE SHIM (MUST BE BEFORE app-min.js) ========== -->
 <script>
   window.__G9_CANVAS_ID = 'atomCanvas';
 
@@ -253,7 +46,6 @@
 </script>
 <script>
 function loadAtomModel() {
-    // empty because G9 is removed
     console.warn("loadAtomModel() called but G9 is removed.");
 }
 </script>
@@ -575,7 +367,7 @@ function loadAtomModel() {
         const pos2 = document.getElementById('pos2');
         console.log(pos2);
 
-// Add event listeners for mouse hover
+
         pos2.addEventListener('mouseenter', function() {
 
             
@@ -598,7 +390,7 @@ function loadAtomModel() {
         const pos3 = document.getElementById('pos3');
         console.log(pos2);
 
-// Add event listeners for mouse hover
+
         pos3.addEventListener('mouseenter', function() {
 
             
@@ -620,7 +412,7 @@ function loadAtomModel() {
         const pos4 = document.getElementById('pos4');
         console.log(pos4);
 
-// Add event listeners for mouse hover
+
         pos4.addEventListener('mouseenter', function() {
             
             const nobleGases = document.querySelectorAll('[data-category="Transition Metal"]');
@@ -641,7 +433,7 @@ function loadAtomModel() {
         const pos5 = document.getElementById('pos5');
         console.log(pos5);
 
-// Add event listeners for mouse hover
+
         pos5.addEventListener('mouseenter', function() {
 
             
@@ -664,7 +456,7 @@ function loadAtomModel() {
         const pos = document.getElementById('pos');
         console.log(pos);
 
-// Add event listeners for mouse hover
+
         pos.addEventListener('mouseenter', function() {
 
             
@@ -687,7 +479,7 @@ function loadAtomModel() {
         const pos6 = document.getElementById('pos6');
         console.log(pos);
 
-// Add event listeners for mouse hover
+
         pos6.addEventListener('mouseenter', function() {
 
             
@@ -710,7 +502,7 @@ function loadAtomModel() {
         const pos7 = document.getElementById('pos7');
         console.log(pos);
 
-// Add event listeners for mouse hover
+
         pos7.addEventListener('mouseenter', function() {
 
             
@@ -733,7 +525,7 @@ function loadAtomModel() {
         const pos8 = document.getElementById('pos8');
         console.log(pos8);
 
-// Add event listeners for mouse hover
+
         pos8.addEventListener('mouseenter', function() {
 
             
@@ -756,7 +548,7 @@ function loadAtomModel() {
         const pos9 = document.getElementById('pos9');
         console.log(pos9);
 
-// Add event listeners for mouse hover
+
         pos9.addEventListener('mouseenter', function() {
 
             
@@ -779,7 +571,7 @@ function loadAtomModel() {
         const pos10 = document.getElementById('pos10');
         console.log(pos10);
 
-// Add event listeners for mouse hover
+
         pos10.addEventListener('mouseenter', function() {
 
             
@@ -802,7 +594,7 @@ function loadAtomModel() {
         const pos11 = document.getElementById('pos11');
         console.log(pos11);
 
-// Add event listeners for mouse hover
+
         pos11.addEventListener('mouseenter', function() {
 
             
@@ -823,7 +615,7 @@ function loadAtomModel() {
             });
         });
 
-// Add event listeners for mouse hover
+
         pos11.addEventListener('click', function() {
 
             
