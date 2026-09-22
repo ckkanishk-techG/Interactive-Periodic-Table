@@ -176,7 +176,7 @@ h1 {
 
 .viewer-box {
     width: 100%;
-    max-width: 460px;
+    max-width: min(460px, 55vh);
     aspect-ratio: 1 / 1;
     margin: 0 auto;
 }

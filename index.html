@@ -27,7 +27,9 @@
                 id="atomicViewer"
                 camera-controls
                 auto-rotate
+                auto-rotate-delay="0"
                 rotation-per-second="70deg"
+                camera-orbit="0deg 75deg 130%"
                 shadow-intensity="1"
                 touch-action="pan-y"
             ></model-viewer>
@@ -278,23 +280,17 @@
         });
 
         // --- 3D model viewer wiring ---
+        // auto-rotate-delay="0" on the element itself makes model-viewer resume
+        // spinning immediately after the user lets go; forcing autoRotate back on
+        // during the drag (mousedown/camera-change) used to fight that built-in
+        // interaction handling and left it stuck after release.
         const atomicViewer = document.getElementById('atomicViewer');
-
-        function forceSpin() {
-            atomicViewer.autoRotate = true;
-            atomicViewer.setAttribute('auto-rotate', '');
-            atomicViewer.setAttribute('rotation-per-second', '150deg');
-        }
 
         atomicViewer.addEventListener('load', () => {
             console.log('Model loaded:', atomicViewer.src);
         });
         atomicViewer.addEventListener('error', (err) => {
             console.error('Model failed to load:', atomicViewer.src, err);
-        });
-
-        ['camera-change', 'mousedown', 'mouseup', 'touchstart', 'touchend'].forEach(evt => {
-            atomicViewer.addEventListener(evt, forceSpin);
         });
     </script>
 
