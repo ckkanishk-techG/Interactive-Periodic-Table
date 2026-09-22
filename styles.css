@@ -5,13 +5,6 @@
 }
 
 :root {
-    --bg: #0b0d12;
-    --bg-panel: #151822;
-    --bg-panel-2: #1c202c;
-    --text-primary: #f2f3f7;
-    --text-secondary: #9aa0b4;
-    --border: rgba(255, 255, 255, 0.08);
-
     --nonmetal: #4fc3f7;
     --noble-gas: #ff7043;
     --alkali-metal: #ef5350;
@@ -25,68 +18,20 @@
     --actinide: #7e57c2;
 
     --cell-size: 62px;
-    --cell-gap: 6px;
-}
-
-html {
-    color-scheme: dark;
+    --cell-gap: 4px;
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    background: radial-gradient(circle at top, #161a24 0%, var(--bg) 55%);
-    color: var(--text-primary);
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f7f7f7;
     margin: 0;
-    padding: clamp(16px, 4vw, 40px) clamp(12px, 3vw, 24px);
-    min-height: 100vh;
-    animation: page-fade-in 0.5s ease both;
-}
-
-@keyframes page-fade-in {
-    from {
-        opacity: 0;
-        transform: translateY(6px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.page {
-    max-width: 1280px;
-    margin: 0 auto;
-}
-
-.site-header {
-    text-align: center;
-    margin-bottom: clamp(20px, 4vw, 36px);
+    padding: clamp(12px, 3vw, 24px);
 }
 
 h1 {
-    margin: 0;
-    font-size: clamp(26px, 5vw, 42px);
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    background: linear-gradient(120deg, #ffffff, #9dd6ff 55%, #c792ea);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    -webkit-text-fill-color: transparent;
-}
-
-.subtitle {
-    margin: 8px 0 0;
-    color: var(--text-secondary);
-    font-size: clamp(13px, 1.8vw, 16px);
-}
-
-.table-panel {
-    background: var(--bg-panel);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: clamp(16px, 3vw, 32px);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    text-align: center;
+    font-size: clamp(20px, 4.5vw, 32px);
+    margin: 0 0 8px;
 }
 
 /* Lets the grid scroll horizontally on narrow viewports instead of
@@ -94,22 +39,7 @@ h1 {
 .table-scroll {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    padding-bottom: 10px;
-    scrollbar-width: thin;
-    scrollbar-color: #3a4152 transparent;
-}
-
-.table-scroll::-webkit-scrollbar {
-    height: 8px;
-}
-
-.table-scroll::-webkit-scrollbar-thumb {
-    background: #3a4152;
-    border-radius: 8px;
-}
-
-.table-scroll::-webkit-scrollbar-track {
-    background: transparent;
+    padding-bottom: 8px;
 }
 
 .table-container {
@@ -118,14 +48,15 @@ h1 {
     grid-auto-rows: var(--cell-size);
     gap: var(--cell-gap);
     justify-content: center;
-    margin: 0 auto;
+    margin: 20px auto 0;
     width: max-content;
     min-width: 100%;
 }
 
 .element {
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 5px;
+    background-color: #cfd8dc;
     text-align: center;
     padding: 2px;
     cursor: pointer;
@@ -134,35 +65,32 @@ h1 {
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    color: #fff;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-    transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.3, 1.3), box-shadow 0.18s ease, filter 0.18s ease;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .element:hover,
 .element:focus-visible {
-    transform: translateY(-3px) scale(1.12);
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
-    filter: brightness(1.08);
+    transform: scale(1.15);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.25);
     z-index: 5;
     outline: none;
 }
 
 .element .symbol {
     font-size: clamp(13px, 1.6vw, 20px);
-    font-weight: 800;
+    font-weight: bold;
     line-height: 1.1;
 }
 
 .element .number {
-    font-size: clamp(9px, 1vw, 12px);
-    opacity: 0.85;
+    font-size: clamp(9px, 1vw, 13px);
+    color: rgba(0, 0, 0, 0.6);
     line-height: 1.1;
 }
 
 .element .name {
-    font-size: clamp(7px, 0.85vw, 10px);
-    opacity: 0.8;
+    font-size: clamp(7px, 0.85vw, 11px);
+    color: rgba(0, 0, 0, 0.55);
     line-height: 1.1;
     white-space: nowrap;
 }
@@ -186,39 +114,32 @@ h1 {
     flex-wrap: wrap;
     justify-content: center;
     gap: 8px;
-    margin-top: clamp(18px, 3vw, 28px);
-    padding-top: clamp(14px, 3vw, 22px);
-    border-top: 1px solid var(--border);
+    max-width: 1100px;
+    margin: 18px auto 0;
+    padding: 0 8px;
 }
 
 .legend-chip {
     border: none;
     border-radius: 20px;
-    padding: 7px 16px;
-    font-size: clamp(11px, 1.4vw, 13px);
-    font-weight: 700;
-    font-family: inherit;
-    color: #fff;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+    padding: 6px 14px;
+    font-size: clamp(11px, 1.4vw, 14px);
+    font-weight: 600;
+    color: #1a1a1a;
     cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .legend-chip:hover,
 .legend-chip:focus-visible {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.45);
-    outline: 2px solid rgba(255, 255, 255, 0.5);
+    outline: 2px solid #333;
     outline-offset: 1px;
 }
 
 #overlay {
     position: fixed;
     inset: 0;
-    background-color: rgba(5, 6, 10, 0.65);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
+    background-color: rgba(0, 0, 0, 0.5);
     display: none;
     z-index: 999;
 }
@@ -228,45 +149,29 @@ h1 {
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) scale(0.96);
-    background-color: var(--bg-panel-2);
-    color: var(--text-primary);
-    border: 1px solid var(--border);
-    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.6);
-    padding: 22px;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px;
     display: none;
-    border-radius: 16px;
+    border-radius: 8px;
     z-index: 1000;
     max-height: 90vh;
     overflow-y: auto;
-    animation: modal-in 0.18s ease forwards;
-}
-
-@keyframes modal-in {
-    to {
-        transform: translate(-50%, -50%) scale(1);
-    }
 }
 
 #modal { width: min(550px, 92vw); }
-#modal2 { width: min(360px, 90vw); }
+#modal2 { width: min(340px, 90vw); }
 
 #modal h2,
 #modal2 h2 {
-    margin: 0 0 14px;
-    padding-right: 70px;
-    font-size: clamp(20px, 3vw, 26px);
+    margin: 0 0 10px;
+    padding-right: 60px;
 }
 
 #modal p,
 #modal2 p {
-    margin: 6px 0;
-    color: var(--text-secondary);
-}
-
-#modal p strong,
-#modal2 p strong {
-    color: var(--text-primary);
+    margin: 5px 0;
 }
 
 .viewer-box {
@@ -274,8 +179,6 @@ h1 {
     max-width: 460px;
     aspect-ratio: 1 / 1;
     margin: 0 auto;
-    background: radial-gradient(circle, #20263a, #12151d);
-    border-radius: 12px;
 }
 
 .viewer-box model-viewer {
@@ -285,35 +188,31 @@ h1 {
 
 #close-modal,
 #close-modal2 {
-    background: rgba(255, 255, 255, 0.08);
-    color: var(--text-primary);
-    font-family: inherit;
-    font-weight: 600;
-    padding: 6px 14px;
-    border: 1px solid var(--border);
-    border-radius: 20px;
+    background-color: #f44336;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
     cursor: pointer;
     float: right;
-    transition: background 0.15s ease;
 }
 
 #close-modal:hover,
 #close-modal2:hover {
-    background: rgba(255, 255, 255, 0.16);
+    background-color: #d32f2f;
 }
 
 .highlight-noble-gas {
-    outline: 3px solid #fff;
+    outline: 4px solid #2e7d32;
     outline-offset: -2px;
     z-index: 6;
-    filter: brightness(1.15);
 }
 
 /* Tablet: shrink cells, drop the element name to keep symbols legible. */
 @media (max-width: 900px) {
     :root {
         --cell-size: 46px;
-        --cell-gap: 4px;
+        --cell-gap: 3px;
     }
     .element .name {
         display: none;
@@ -324,7 +223,7 @@ h1 {
 @media (max-width: 520px) {
     :root {
         --cell-size: 34px;
-        --cell-gap: 3px;
+        --cell-gap: 2px;
     }
     .element .number {
         display: none;
