@@ -2,155 +2,49 @@
 <html lang="en">
 <head>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Periodic Table</title>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="js/require.js"></script>
-<script src="js/app-min.js"></script>
-<script src="js/g9-min.js"></script>
-<link rel="stylesheet" href="styles.css">
-
-<script>
-  window.__G9_CANVAS_ID = 'atomCanvas';
-
-  (function() {
-    const originalCreateElement = Document.prototype.createElement;
-
-    Document.prototype.createElement = function(tagName, options) {
-      if (String(tagName).toLowerCase() === 'canvas') {
-        const userCanvas = document.getElementById(window.__G9_CANVAS_ID);
-        if (userCanvas) {
-          userCanvas.style.display = userCanvas.style.display || 'block';
-
-          if (!userCanvas.getAttribute('width')) {
-            const rect = userCanvas.getBoundingClientRect();
-            const w = Math.round(rect.width) || 500;
-            const h = Math.round(rect.height) || 500;
-            userCanvas.setAttribute('width', w);
-            userCanvas.setAttribute('height', h);
-          }
-
-          return userCanvas;
-        }
-      }
-      return originalCreateElement.call(this, tagName, options);
-    };
-
-    window.__restoreCreateElement = function() {
-      Document.prototype.createElement = originalCreateElement;
-    };
-  })();
-</script>
-<script>
-function loadAtomModel() {
-    console.warn("loadAtomModel() called but G9 is removed.");
-}
-</script>
-
-
-
-
-
-<script>
-  const viewer = document.getElementById("atomicViewer");
-
-  function forceSpin() {
-    viewer.autoRotate = true;
-  }
-
-  viewer.addEventListener("mousedown", forceSpin);
-  viewer.addEventListener("mouseup", forceSpin);
-  viewer.addEventListener("touchstart", forceSpin);
-  viewer.addEventListener("touchend", forceSpin);
-  viewer.addEventListener("camera-change", forceSpin);
-</script>
-
-
-
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
     <h1>Interactive Periodic Table</h1>
-    <div class="table-container" id="periodicTable"></div>
-    <div class="table-container">
 
-        <div class="category pos element" id="pos" style="grid-column: 1 / 2;">Nonmetal</div> 
-        <div class="category pos2 element" id="pos2" style="grid-column: 2 / 3;">Noble Gas</div> 
-        <div class="category pos3 element" id="pos3" style="grid-column: 2 / 3;">Alkaline Earth Metal</div>
-        <div class="category pos4 element" id="pos4" style="grid-column: 2 / 3;">Transition Metal</div>
-        <div class="category pos5 element" id="pos5" style="grid-column: 2 / 3;">Metal</div>
-        <div class="category pos6 element" id="pos6" style="grid-column: 2 / 3;">Alkali Metal</div>
-        <div class="category pos7 element" id="pos7" style="grid-column: 2 / 3;">Post-transition Metal</div>  
-        <div class="category pos8 element" id="pos8" style="grid-column: 2 / 3;">Halogen</div>  
-        <div class="category pos9 element" id="pos9" style="grid-column: 2 / 3;">Lanthanide</div>  
-        <div class="category pos10 element" id="pos10" style="grid-column: 2 / 3;">Actinide</div>   
-        <div class="category pos11 element" id="pos11" style="grid-column: 2 / 3;">Metalloid</div>    
+    <div class="table-scroll">
+        <div class="table-container" id="periodicTable"></div>
     </div>
-    
 
-
+    <div class="legend" id="legend"></div>
 
     <div id="overlay"></div>
+
     <div id="modal">
         <button id="close-modal">Close</button>
         <h2 id="elementName"></h2>
-        <div id="glbViewer" style="width: 500px; height: 500px;">
-            <model-viewer 
+        <div class="viewer-box" id="glbViewer">
+            <model-viewer
                 id="atomicViewer"
-                style="width:120%; height:120%;"
                 camera-controls
                 auto-rotate
                 rotation-per-second="70deg"
                 shadow-intensity="1"
                 touch-action="pan-y"
             ></model-viewer>
-            <script>
-            const mv = document.getElementById("atomicViewer");
-
-            // Log when model loads successfully
-            mv.addEventListener("load", () => {
-                console.log("✅ Model loaded successfully:", mv.src);
-            });
-
-            // Log when model fails to load
-            mv.addEventListener("error", (err) => {
-                console.error("❌ Model failed to load:", mv.src, err);
-            });
-
-            // Force constant rotation
-            function forceSpin() {
-                mv.autoRotate = true;
-                mv.setAttribute("auto-rotate", "");
-                mv.setAttribute("rotation-per-second", "150deg");
-            }
-
-            // Reinforce rotation after user interaction
-            mv.addEventListener("camera-change", forceSpin);
-            mv.addEventListener("mousedown", forceSpin);
-            mv.addEventListener("mouseup", forceSpin);
-            mv.addEventListener("touchstart", forceSpin);
-            mv.addEventListener("touchend", forceSpin);
-            </script>
-
         </div>
 
         <p><strong>Atomic Number:</strong> <span id="elementNumber"></span></p>
         <p><strong>Symbol:</strong> <span id="elementSymbol"></span></p>
         <p><strong>Atomic Mass:</strong> <span id="elementMass"></span></p>
         <p><strong>Category:</strong> <span id="elementCategory"></span></p>
-        
     </div>
+
     <div id="modal2">
         <button id="close-modal2">Close</button>
         <h2 id="elementName2"></h2>
-        <p><strong>Discription:</strong> <span id="elementNumber2"></span></p>
-
-        
+        <p><strong>Description:</strong> <span id="elementNumber2"></span></p>
     </div>
-    
+
     <script>
         // Elements data
         const elements = [
@@ -274,483 +168,135 @@ function loadAtomModel() {
             { number: 118, symbol: "Og", name: "Oganesson", mass: "294", category: "Noble Gas", col: 18,row: 7 }
         ];
 
-        // Create the periodic table
-        // Render periodic table elements dynamically
+        // Category metadata: single source of truth for legend, colors (via CSS data-category
+        // selectors) and info-modal descriptions. Replaces the old copy-pasted per-category
+        // event handlers.
+        const CATEGORIES = [
+            { name: "Nonmetal", description: "Nonmetals are elements that lack the characteristics of metals. They are poor conductors of heat and electricity, are brittle in solid form, and often have low melting and boiling points. Nonmetals include gases like oxygen, nitrogen, and chlorine, as well as solids like sulfur and carbon. They are essential in organic compounds and life processes." },
+            { name: "Noble Gas", description: "Noble gases are a group of inert, colorless, odorless gases found in Group 18 of the periodic table. They include helium, neon, argon, krypton, xenon, and radon. These gases are chemically unreactive due to their full valence electron shells, making them stable and useful in lighting, welding, and medical applications." },
+            { name: "Alkali Metal", description: "Alkali metals are highly reactive elements found in Group 1 of the periodic table. They include lithium, sodium, potassium, rubidium, cesium, and francium. These metals are characterized by their soft texture, low melting points, and strong reactivity with water, producing hydrogen gas and forming alkaline hydroxides." },
+            { name: "Alkaline Earth Metal", description: "Alkaline earth metals are elements found in Group 2 of the periodic table. They include beryllium, magnesium, calcium, strontium, barium, and radium. These metals are shiny, silvery-white, and relatively reactive, especially with water. They form basic oxides and are commonly used in construction, electronics, and manufacturing." },
+            { name: "Transition Metal", description: "Transition metals are elements found in groups 3 to 12 of the periodic table. They include metals like iron, copper, gold, and platinum. These metals are characterized by their ability to form multiple oxidation states, conduct heat and electricity, and often display high melting points and durability. Transition metals are widely used in construction, electronics, and catalysis." },
+            { name: "Metal", description: "Metals are a group of elements that are typically characterized by their ability to conduct heat and electricity, malleability, ductility, and luster. They tend to lose electrons in chemical reactions, forming positive ions. Common metals include iron, copper, gold, aluminum, and silver, and they are used in construction, manufacturing, and electronics." },
+            { name: "Post-transition Metal", description: "Post-transition metals are elements located to the right of the transition metals in the periodic table, typically in groups 13-16. They include elements like aluminum, gallium, tin, lead, and bismuth. These metals are characterized by lower melting points, lower densities, and higher electrical conductivity compared to transition metals." },
+            { name: "Halogen", description: "Halogens are a group of five chemical elements in Group 17 of the periodic table: fluorine, chlorine, bromine, iodine, and astatine. They are highly reactive, particularly with alkali and alkaline earth metals, forming salts. Halogens are used in disinfectants, lighting, pharmaceuticals, and as reactants in industrial processes." },
+            { name: "Lanthanide", description: "Lanthanides are a group of 15 elements in the periodic table, from atomic numbers 57 to 71, spanning from lanthanum to lutetium. They are known for their similar properties, including high melting points, magnetic susceptibility, and rare-earth characteristics, and are used in electronics, magnets, and catalytic processes." },
+            { name: "Actinide", description: "All actinides are radioactive and also release energy when radioactive decay occurs. The most abundant actinides on Earth are Uranium and Thorium (which are naturally occurring) and Plutonium, which is synthetically produced. These actinides are used in nuclear weapons and nuclear reactors." },
+            { name: "Metalloid", description: "Metalloids are elements with properties that are intermediate between metals and nonmetals. They usually look like metals but behave more like nonmetals. For example, silicon is a metalloid because it has luster, but is brittle." }
+        ];
+
+        // --- Render the periodic table ---
         const periodicTableElement = document.getElementById('periodicTable');
+
         elements.forEach(element => {
             const elementDiv = document.createElement('div');
-            elementDiv.classList.add('element');
-            elementDiv.setAttribute('data-category', element.category);
+            elementDiv.className = 'element';
+            elementDiv.dataset.category = element.category;
+            elementDiv.tabIndex = 0;
+            elementDiv.setAttribute('role', 'button');
+            elementDiv.setAttribute('aria-label', `${element.name} (${element.symbol})`);
+            elementDiv.style.gridColumn = element.col;
+            elementDiv.style.gridRow = element.row;
             elementDiv.innerHTML = `
                 <div class="symbol">${element.symbol}</div>
                 <div class="number">${element.number}</div>
                 <div class="name">${element.name}</div>
             `;
-         
-                
 
-    // Add click event to show modal
-            elementDiv.addEventListener('click', () => {
+            const openElementModal = () => {
                 document.getElementById('elementName').textContent = element.name;
                 document.getElementById('elementNumber').textContent = element.number;
                 document.getElementById('elementSymbol').textContent = element.symbol;
                 document.getElementById('elementMass').textContent = element.mass;
                 document.getElementById('elementCategory').textContent = element.category;
 
-                const modelViewer = document.getElementById("atomicViewer");
-                const id = element.number;
+                const modelViewer = document.getElementById('atomicViewer');
+                modelViewer.src = `./models/${element.number}.glb`;
+                modelViewer.setAttribute('auto-rotate', '');
+                modelViewer.setAttribute('rotation-per-second', '150deg');
 
-                // Load GLB into <model-viewer>
-                modelViewer.src = `./models/${id}.glb`;
+                showModal('modal');
+            };
 
-                // Force spinning always
-                modelViewer.setAttribute("auto-rotate", "");
-                modelViewer.setAttribute("rotation-per-second", "150deg");
-
-                // Show modal
-                document.getElementById('overlay').style.display = 'block';
-                document.getElementById('modal').style.display = 'block';
+            elementDiv.addEventListener('click', openElementModal);
+            elementDiv.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    openElementModal();
+                }
             });
-
-            if (element.category === "Nonmetal") {
-                elementDiv.style.backgroundColor = "#2b75c8"; 
-            } else if (element.category === "Noble Gas") {
-                elementDiv.style.backgroundColor = "#fe2828"; 
-            }else if (element.category === "Alkaline Earth Metal") {
-                elementDiv.style.backgroundColor = "#fe2830"; 
-            }else if (element.category === "Metalloid") {
-                elementDiv.style.backgroundColor = "#fff57f"; 
-            }else if (element.category === "Metal") {
-                elementDiv.style.backgroundColor = "#54ff39"; 
-            }else if (element.category === "Alkali Metal") {
-                elementDiv.style.backgroundColor = "#54ff39"; 
-            }else if (element.category === "Metal") {
-                elementDiv.style.backgroundColor = "#54ff39"; 
-            }else if (element.category === "Transition Metal") {
-                elementDiv.style.backgroundColor = "#e557f1"; 
-            }else if (element.category === "Post-transition Metal") {
-                elementDiv.style.backgroundColor = "#a2a2a2"; 
-            }else if (element.category === "Halogen") {
-                elementDiv.style.backgroundColor = "#a2a2a2"; 
-            }else if (element.category === "Lanthanide") {
-                elementDiv.style.backgroundColor = "#e557f1"; 
-            }else if (element.category === "Actinide") {
-                elementDiv.style.backgroundColor = "#e557f1"; 
-            }
-    
-    // Place element in the correct grid position
-            elementDiv.style.gridColumn = element.col;
-            elementDiv.style.gridRow = element.row;
 
             periodicTableElement.appendChild(elementDiv);
         });
 
-// Close modal when close button is clicked
-        document.getElementById('close-modal').addEventListener('click', () => {
+        // --- Render the category legend ---
+        const legendElement = document.getElementById('legend');
+
+        CATEGORIES.forEach(category => {
+            const chip = document.createElement('button');
+            chip.type = 'button';
+            chip.className = 'legend-chip';
+            chip.dataset.category = category.name;
+            chip.textContent = category.name;
+
+            chip.addEventListener('mouseenter', () => setHighlight(category.name, true));
+            chip.addEventListener('mouseleave', () => setHighlight(category.name, false));
+            chip.addEventListener('focus', () => setHighlight(category.name, true));
+            chip.addEventListener('blur', () => setHighlight(category.name, false));
+            chip.addEventListener('click', () => {
+                document.getElementById('elementName2').textContent = category.name;
+                document.getElementById('elementNumber2').textContent = category.description;
+                showModal('modal2');
+            });
+
+            legendElement.appendChild(chip);
+        });
+
+        function setHighlight(categoryName, on) {
+            document.querySelectorAll(`#periodicTable [data-category="${categoryName}"]`).forEach(el => {
+                el.classList.toggle('highlight-noble-gas', on);
+            });
+        }
+
+        // --- Modal helpers ---
+        function showModal(id) {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById(id).style.display = 'block';
+        }
+
+        function closeModals() {
             document.getElementById('overlay').style.display = 'none';
             document.getElementById('modal').style.display = 'none';
-        });
-        document.getElementById('close-modal2').addEventListener('click', () => {
-            document.getElementById('overlay').style.display = 'none';
             document.getElementById('modal2').style.display = 'none';
-        });
-// Close modal when overlay is clicked
-        document.getElementById('overlay').addEventListener('click', () => {
-            document.getElementById('overlay').style.display = 'none';
-            document.getElementById('modal').style.display = 'none';
-        });
-        document.getElementById('overlay').addEventListener('click', () => {
-            document.getElementById('overlay').style.display = 'none';
-            document.getElementById('modal2').style.display = 'none';
+        }
+
+        document.getElementById('close-modal').addEventListener('click', closeModals);
+        document.getElementById('close-modal2').addEventListener('click', closeModals);
+        document.getElementById('overlay').addEventListener('click', closeModals);
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') closeModals();
         });
 
-        const pos2 = document.getElementById('pos2');
-        console.log(pos2);
+        // --- 3D model viewer wiring ---
+        const atomicViewer = document.getElementById('atomicViewer');
 
+        function forceSpin() {
+            atomicViewer.autoRotate = true;
+            atomicViewer.setAttribute('auto-rotate', '');
+            atomicViewer.setAttribute('rotation-per-second', '150deg');
+        }
 
-        pos2.addEventListener('mouseenter', function() {
-
-            
-            const nobleGases = document.querySelectorAll('[data-category="Noble Gas"]');
-
-
-            nobleGases.forEach(element => {
-                element.classList.add('highlight-noble-gas');
-            });
+        atomicViewer.addEventListener('load', () => {
+            console.log('Model loaded:', atomicViewer.src);
+        });
+        atomicViewer.addEventListener('error', (err) => {
+            console.error('Model failed to load:', atomicViewer.src, err);
         });
 
-        pos2.addEventListener('mouseleave', function() {
-
-            const nobleGases = document.querySelectorAll('[data-category="Noble Gas"]');
-    
-            nobleGases.forEach(element => {
-                element.classList.remove('highlight-noble-gas');
-            });
+        ['camera-change', 'mousedown', 'mouseup', 'touchstart', 'touchend'].forEach(evt => {
+            atomicViewer.addEventListener(evt, forceSpin);
         });
-        const pos3 = document.getElementById('pos3');
-        console.log(pos2);
-
-
-        pos3.addEventListener('mouseenter', function() {
-
-            
-            const nobleGases = document.querySelectorAll('[data-category="Alkaline Earth Metal"]');
-
-            nobleGases.forEach(element => {
-                element.classList.add('highlight-noble-gas');
-            });
-        });
-
-        pos3.addEventListener('mouseleave', function() {
-
-            const nobleGases = document.querySelectorAll('[data-category="Alkaline Earth Metal"]');
-    
-            nobleGases.forEach(element => {
-                element.classList.remove('highlight-noble-gas');
-            });
-        });
-        const pos4 = document.getElementById('pos4');
-        console.log(pos4);
-
-
-        pos4.addEventListener('mouseenter', function() {
-            
-            const nobleGases = document.querySelectorAll('[data-category="Transition Metal"]');
-
-            nobleGases.forEach(element => {
-                element.classList.add('highlight-noble-gas');
-            });
-        });
-
-        pos4.addEventListener('mouseleave', function() {
-
-            const nobleGases = document.querySelectorAll('[data-category="Transition Metal"]');
-    
-            nobleGases.forEach(element => {
-                element.classList.remove('highlight-noble-gas');
-            });
-        });
-        const pos5 = document.getElementById('pos5');
-        console.log(pos5);
-
-
-        pos5.addEventListener('mouseenter', function() {
-
-            
-            const nobleGases = document.querySelectorAll('[data-category="Metal"]');
-
-
-            nobleGases.forEach(element => {
-                element.classList.add('highlight-noble-gas');
-            });
-        });
-
-        pos5.addEventListener('mouseleave', function() {
-
-            const nobleGases = document.querySelectorAll('[data-category="Metal"]');
-    
-            nobleGases.forEach(element => {
-                element.classList.remove('highlight-noble-gas');
-            });
-        });
-        const pos = document.getElementById('pos');
-        console.log(pos);
-
-
-        pos.addEventListener('mouseenter', function() {
-
-            
-            const nobleGases = document.querySelectorAll('[data-category="Nonmetal"]');
-
-
-            nobleGases.forEach(element => {
-                element.classList.add('highlight-noble-gas');
-            });
-        });
-
-        pos.addEventListener('mouseleave', function() {
-
-            const nobleGases = document.querySelectorAll('[data-category="Nonmetal"]');
-    
-            nobleGases.forEach(element => {
-                element.classList.remove('highlight-noble-gas');
-            });
-        });
-        const pos6 = document.getElementById('pos6');
-        console.log(pos);
-
-
-        pos6.addEventListener('mouseenter', function() {
-
-            
-            const nobleGases = document.querySelectorAll('[data-category="Alkali Metal"]');
-
-
-            nobleGases.forEach(element => {
-                element.classList.add('highlight-noble-gas');
-            });
-        });
-
-        pos6.addEventListener('mouseleave', function() {
-
-            const nobleGases = document.querySelectorAll('[data-category="Alkali Metal"]');
-    
-            nobleGases.forEach(element => {
-                element.classList.remove('highlight-noble-gas');
-            });
-        });
-        const pos7 = document.getElementById('pos7');
-        console.log(pos);
-
-
-        pos7.addEventListener('mouseenter', function() {
-
-            
-            const nobleGases = document.querySelectorAll('[data-category="Post-transition Metal"]');
-
-
-            nobleGases.forEach(element => {
-                element.classList.add('highlight-noble-gas');
-            });
-        });
-
-        pos7.addEventListener('mouseleave', function() {
-
-            const nobleGases = document.querySelectorAll('[data-category="Post-transition Metal"]');
-    
-            nobleGases.forEach(element => {
-                element.classList.remove('highlight-noble-gas');
-            });
-        });        
-        const pos8 = document.getElementById('pos8');
-        console.log(pos8);
-
-
-        pos8.addEventListener('mouseenter', function() {
-
-            
-            const nobleGases = document.querySelectorAll('[data-category="Halogen"]');
-
-
-            nobleGases.forEach(element => {
-                element.classList.add('highlight-noble-gas');
-            });
-        });
-
-        pos8.addEventListener('mouseleave', function() {
-
-            const nobleGases = document.querySelectorAll('[data-category="Halogen"]');
-    
-            nobleGases.forEach(element => {
-                element.classList.remove('highlight-noble-gas');
-            });
-        });
-        const pos9 = document.getElementById('pos9');
-        console.log(pos9);
-
-
-        pos9.addEventListener('mouseenter', function() {
-
-            
-            const nobleGases = document.querySelectorAll('[data-category="Lanthanide"]');
-
-
-            nobleGases.forEach(element => {
-                element.classList.add('highlight-noble-gas');
-            });
-        });
-
-        pos9.addEventListener('mouseleave', function() {
-
-            const nobleGases = document.querySelectorAll('[data-category="Lanthanide"]');
-    
-            nobleGases.forEach(element => {
-                element.classList.remove('highlight-noble-gas');
-            });
-        });
-        const pos10 = document.getElementById('pos10');
-        console.log(pos10);
-
-
-        pos10.addEventListener('mouseenter', function() {
-
-            
-            const nobleGases = document.querySelectorAll('[data-category="Actinide"]');
-
-
-            nobleGases.forEach(element => {
-                element.classList.add('highlight-noble-gas');
-            });
-        });
-
-        pos10.addEventListener('mouseleave', function() {
-
-            const nobleGases = document.querySelectorAll('[data-category="Actinide"]');
-    
-            nobleGases.forEach(element => {
-                element.classList.remove('highlight-noble-gas');
-            });
-        });
-        const pos11 = document.getElementById('pos11');
-        console.log(pos11);
-
-
-        pos11.addEventListener('mouseenter', function() {
-
-            
-            const nobleGases = document.querySelectorAll('[data-category="Metalloid"]');
-
-
-            nobleGases.forEach(element => {
-                element.classList.add('highlight-noble-gas');
-            });
-        });
-
-        pos11.addEventListener('mouseleave', function() {
-
-            const nobleGases = document.querySelectorAll('[data-category="Metalloid"]');
-    
-            nobleGases.forEach(element => {
-                element.classList.remove('highlight-noble-gas');
-            });
-        });
-
-
-        pos11.addEventListener('click', function() {
-
-            
-            const nobleGases = document.querySelectorAll('[data-category="Metalloid"]');
-
-
-            
-                document.getElementById('elementName2').textContent = "Metalloids";
-                document.getElementById('elementNumber2').textContent = "Metalloids are elements with properties that are intermediate between metals and nonmetals. They usually look like metals but behave more like nonmetals. For example, silicon is a metalloid because it has luster, but is brittle.";
-                document.getElementById('overlay').style.display = 'block';
-                document.getElementById('modal2').style.display = 'block';
-            });
-            pos10.addEventListener('click', function() {
-
-            
-            const nobleGases = document.querySelectorAll('[data-category="Metalloid"]');
-
-
-            
-                document.getElementById('elementName2').textContent = "Actinides";
-                document.getElementById('elementNumber2').textContent = "All actinides are radioactive and also release energy when radioactive decay occurs. The most abundant actinides on Earth are Uranium and Thorium (which are naturally occurring) and Plutonium, which is synthetically produced. These actinides are used in nuclear weapons and nuclear reactors.";
-                document.getElementById('overlay').style.display = 'block';
-                document.getElementById('modal2').style.display = 'block';
-            }); 
-            pos9.addEventListener('click', function() {
-
-            
-            const nobleGases = document.querySelectorAll('[data-category="Metalloid"]');
-
-
-            
-                document.getElementById('elementName2').textContent = "Lanthanide";
-                document.getElementById('elementNumber2').textContent = "Lanthanides are a group of 15 elements in the periodic table, from atomic numbers 57 to 71, spanning from lanthanum to lutetium. They are known for their similar properties, including high melting points, magnetic susceptibility, and rare-earth characteristics, and are used in electronics, magnets, and catalytic processes.";
-                document.getElementById('overlay').style.display = 'block';
-                document.getElementById('modal2').style.display = 'block';
-            }); 
-            pos8.addEventListener('click', function() {
-
-            
-            const nobleGases = document.querySelectorAll('[data-category="Metalloid"]');
-
-
-            
-                document.getElementById('elementName2').textContent = "Halogen";
-                document.getElementById('elementNumber2').textContent = "Halogens are a group of five chemical elements in Group 17 of the periodic table: fluorine, chlorine, bromine, iodine, and astatine. They are highly reactive, particularly with alkali and alkaline earth metals, forming salts. Halogens are used in disinfectants, lighting, pharmaceuticals, and as reactants in industrial processes.";
-                document.getElementById('overlay').style.display = 'block';
-                document.getElementById('modal2').style.display = 'block';
-            });   
-            pos7.addEventListener('click', function() {
-
-            
-            const nobleGases = document.querySelectorAll('[data-category="Metalloid"]');
-
-
-            
-                document.getElementById('elementName2').textContent = "Post-transition metals";
-                document.getElementById('elementNumber2').textContent = "Post-transition metals are elements located to the right of the transition metals in the periodic table, typically in groups 13-16. They include elements like aluminum, gallium, tin, lead, and bismuth. These metals are characterized by lower melting points, lower densities, and higher electrical conductivity compared to transition metals.";
-                document.getElementById('overlay').style.display = 'block';
-                document.getElementById('modal2').style.display = 'block';
-            });
-            pos6.addEventListener('click', function() {
-
-            
-            const nobleGases = document.querySelectorAll('[data-category="Metalloid"]');
-
-
-            
-                document.getElementById('elementName2').textContent = "Alkali Metal";
-                document.getElementById('elementNumber2').textContent = "Alkali metals are highly reactive elements found in Group 1 of the periodic table. They include lithium, sodium, potassium, rubidium, cesium, and francium. These metals are characterized by their soft texture, low melting points, and strong reactivity with water, producing hydrogen gas and forming alkaline hydroxides.";
-                document.getElementById('overlay').style.display = 'block';
-                document.getElementById('modal2').style.display = 'block';
-            });    
-            pos5.addEventListener('click', function() {
-
-            
-            const nobleGases = document.querySelectorAll('[data-category="Metalloid"]');
-
-
-            
-                document.getElementById('elementName2').textContent = "Metal";
-                document.getElementById('elementNumber2').textContent = "Metals are a group of elements that are typically characterized by their ability to conduct heat and electricity, malleability, ductility, and luster. They tend to lose electrons in chemical reactions, forming positive ions. Common metals include iron, copper, gold, aluminum, and silver, and they are used in construction, manufacturing, and electronics.";
-                document.getElementById('overlay').style.display = 'block';
-                document.getElementById('modal2').style.display = 'block';
-            });
-            pos4.addEventListener('click', function() {
-
-            
-            const nobleGases = document.querySelectorAll('[data-category="Metalloid"]');
-
-
-            
-                document.getElementById('elementName2').textContent = "Transition metals";
-                document.getElementById('elementNumber2').textContent = "Transition metals are elements found in groups 3 to 12 of the periodic table. They include metals like iron, copper, gold, and platinum. These metals are characterized by their ability to form multiple oxidation states, conduct heat and electricity, and often display high melting points and durability. Transition metals are widely used in construction, electronics, and catalysis.";
-                document.getElementById('overlay').style.display = 'block';
-                document.getElementById('modal2').style.display = 'block';
-            });
-            pos3.addEventListener('click', function() {
-
-            
-            const nobleGases = document.querySelectorAll('[data-category="Metalloid"]');
-
-
-            
-                document.getElementById('elementName2').textContent = "Alkaline earth metal";
-                document.getElementById('elementNumber2').textContent = "Alkaline earth metals are elements found in Group 2 of the periodic table. They include beryllium, magnesium, calcium, strontium, barium, and radium. These metals are shiny, silvery-white, and relatively reactive, especially with water. They form basic oxides and are commonly used in construction, electronics, and manufacturing.";
-                document.getElementById('overlay').style.display = 'block';
-                document.getElementById('modal2').style.display = 'block';
-            });  
-            pos2.addEventListener('click', function() {
-
-            
-            const nobleGases = document.querySelectorAll('[data-category="Metalloid"]');
-
-
-            
-                document.getElementById('elementName2').textContent = "Nonmetals";
-                document.getElementById('elementNumber2').textContent = "Nonmetals are elements that lack the characteristics of metals. They are poor conductors of heat and electricity, are brittle in solid form, and often have low melting and boiling points. Nonmetals include gases like oxygen, nitrogen, and chlorine, as well as solids like sulfur and carbon. They are essential in organic compounds and life processes.";
-                document.getElementById('overlay').style.display = 'block';
-                document.getElementById('modal2').style.display = 'block';
-            });  
-            pos.addEventListener('click', function() {
-
-            
-            const nobleGases = document.querySelectorAll('[data-category="Metalloid"]');
-
-
-            
-                document.getElementById('elementName2').textContent = "Noble gases";
-                document.getElementById('elementNumber2').textContent = "Noble gases are a group of inert, colorless, odorless gases found in Group 18 of the periodic table. They include helium, neon, argon, krypton, xenon, and radon. These gases are chemically unreactive due to their full valence electron shells, making them stable and useful in lighting, welding, and medical applications.";
-                document.getElementById('overlay').style.display = 'block';
-                document.getElementById('modal2').style.display = 'block';
-            });  
-
-       
     </script>
-    
+
 </body>
 </html>

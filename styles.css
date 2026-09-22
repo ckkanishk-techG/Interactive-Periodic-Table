@@ -1,202 +1,231 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
 
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f7f7f7;
-            margin: 0;
-            padding: 20px;
-        }
-        h1 {
-            text-align: center;
-        }
-        .table-container {
-            display: grid;
-            grid-template-columns: repeat(18, 85px);
-            grid-template-rows: repeat(10, 100px); 
-            grid-gap: 5px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-        .element {
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #03ebc0;
-            text-align: center;
-            padding: 10px;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 80px;
-        }
-        .element:hover {
-            background-color: #c2c2c2; /* Change background color on hover */
-            transform: scale(1.3); /* Scale up on hover */
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Enhanced shadow */
-        }
-        .element .symbol {
-            font-size: 20px;
-            font-weight: bold;
-        }
-        .element .number {
-            font-size: 14px;
-            color: #555;
-        }
-        .element .name {
-            font-size: 12px;
-            color: #777;
-        }
-        #modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            display: none;
-            border-radius: 8px;
-            z-index: 1000;
-            width: 550px !important;
-        }
-        #modal h2 {
-            margin: 0 0 10px;
-        }
-        #modal p {
-            margin: 5px 0;
-        }
-        #modal2 {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            display: none;
-            border-radius: 8px;
-            z-index: 1000;
-            width: 300px;
-        }
-        #modal2 h2 {
-            margin: 0 0 10px;
-        }
-        #modal2 p {
-            margin: 5px 0;
-        }
-        #overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: none;
-            z-index: 999;
-        }
-        #close-modal {
-            background-color: #f44336;
-            color: white;
-            padding: 5px 10px;
-            border: none;
-            cursor: pointer;
-            float: right;
-        }
-        #close-modal:hover {
-            background-color: #d32f2f;
-        }
-        #close-modal2 {
-            background-color: #f44336;
-            color: white;
-            padding: 5px 10px;
-            border: none;
-            cursor: pointer;
-            float: right;
-        }
-        #close-modal2:hover {
-            background-color: #d32f2f;
-        }
-        .category {/* Highlight the category labels */
-            color: #f31313;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            font-weight: bold;
-             /* Make sure it appears above other content */
-        }
-        .pos {
-            position: absolute;
-            top: 190px;
-            left: 335px;
-            z-index: 10;
-        }
-        .pos2{
-            position: absolute;
-            top: 190px;
-            left: 230px;
-            z-index: 10;
-        }
-        .pos3{
-            position: absolute;
-            top: 190px;
-            left: 435px;
-            z-index: 10;
-        }
-        .pos4{
-            position: absolute;
-            top: 190px;
-            left: 615px;
-            z-index: 10;
-        }
-        .pos5{
-            position: absolute;
-            top: 190px;
-            left: 765px;
-            z-index: 10;
-        }
-        .pos6{
-            position: absolute;
-            top: 190px;
-            left: 835px;
-            z-index: 10;
-        }
-        .pos7{
-            position: absolute;
-            top: 300px;
-            left: 230px;
-            z-index: 10;
-        }
-        .pos8{
-            position: absolute;
-            top: 300px;
-            left: 430px;
-            z-index: 10;
-        }
-        .pos9{
-            position: absolute;
-            top: 300px;
-            left: 530px;
-            z-index: 10;
-        }
-        .pos10{
-            position: absolute;
-            top: 300px;
-            left: 650px;
-            z-index: 10;
-        }
-        .pos11{
-            position: absolute;
-            top: 300px;
-            left: 750px;
-            z-index: 10;
-        }
-        input[type="radio"]:checked ~ .nonmetal {
-            border-color: red;
-        }
-        /* Green border for Noble Gas elements */
-        .highlight-noble-gas {
-            border: 5px solid green;
-            z-index: 10;
-        }
+:root {
+    --nonmetal: #4fc3f7;
+    --noble-gas: #ff7043;
+    --alkali-metal: #ef5350;
+    --alkaline-earth-metal: #ffa726;
+    --transition-metal: #ab47bc;
+    --post-transition-metal: #78909c;
+    --metalloid: #ffee58;
+    --metal: #66bb6a;
+    --halogen: #26a69a;
+    --lanthanide: #ec407a;
+    --actinide: #7e57c2;
+
+    --cell-size: 62px;
+    --cell-gap: 4px;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f7f7f7;
+    margin: 0;
+    padding: clamp(12px, 3vw, 24px);
+}
+
+h1 {
+    text-align: center;
+    font-size: clamp(20px, 4.5vw, 32px);
+    margin: 0 0 8px;
+}
+
+/* Lets the grid scroll horizontally on narrow viewports instead of
+   overflowing the page or getting squished unreadably. */
+.table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
+}
+
+.table-container {
+    display: grid;
+    grid-template-columns: repeat(18, var(--cell-size));
+    grid-auto-rows: var(--cell-size);
+    gap: var(--cell-gap);
+    justify-content: center;
+    margin: 20px auto 0;
+    width: max-content;
+    min-width: 100%;
+}
+
+.element {
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 5px;
+    background-color: #cfd8dc;
+    text-align: center;
+    padding: 2px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.element:hover,
+.element:focus-visible {
+    transform: scale(1.15);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.25);
+    z-index: 5;
+    outline: none;
+}
+
+.element .symbol {
+    font-size: clamp(13px, 1.6vw, 20px);
+    font-weight: bold;
+    line-height: 1.1;
+}
+
+.element .number {
+    font-size: clamp(9px, 1vw, 13px);
+    color: rgba(0, 0, 0, 0.6);
+    line-height: 1.1;
+}
+
+.element .name {
+    font-size: clamp(7px, 0.85vw, 11px);
+    color: rgba(0, 0, 0, 0.55);
+    line-height: 1.1;
+    white-space: nowrap;
+}
+
+/* Category colors, shared by the grid cells and the legend chips
+   via the same data-category attribute. */
+[data-category="Nonmetal"] { background-color: var(--nonmetal); }
+[data-category="Noble Gas"] { background-color: var(--noble-gas); }
+[data-category="Alkali Metal"] { background-color: var(--alkali-metal); }
+[data-category="Alkaline Earth Metal"] { background-color: var(--alkaline-earth-metal); }
+[data-category="Transition Metal"] { background-color: var(--transition-metal); }
+[data-category="Post-transition Metal"] { background-color: var(--post-transition-metal); }
+[data-category="Metalloid"] { background-color: var(--metalloid); }
+[data-category="Metal"] { background-color: var(--metal); }
+[data-category="Halogen"] { background-color: var(--halogen); }
+[data-category="Lanthanide"] { background-color: var(--lanthanide); }
+[data-category="Actinide"] { background-color: var(--actinide); }
+
+.legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    max-width: 1100px;
+    margin: 18px auto 0;
+    padding: 0 8px;
+}
+
+.legend-chip {
+    border: none;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: clamp(11px, 1.4vw, 14px);
+    font-weight: 600;
+    color: #1a1a1a;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.legend-chip:hover,
+.legend-chip:focus-visible {
+    outline: 2px solid #333;
+    outline-offset: 1px;
+}
+
+#overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 999;
+}
+
+#modal,
+#modal2 {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    display: none;
+    border-radius: 8px;
+    z-index: 1000;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+#modal { width: min(550px, 92vw); }
+#modal2 { width: min(340px, 90vw); }
+
+#modal h2,
+#modal2 h2 {
+    margin: 0 0 10px;
+    padding-right: 60px;
+}
+
+#modal p,
+#modal2 p {
+    margin: 5px 0;
+}
+
+.viewer-box {
+    width: 100%;
+    max-width: 460px;
+    aspect-ratio: 1 / 1;
+    margin: 0 auto;
+}
+
+.viewer-box model-viewer {
+    width: 100%;
+    height: 100%;
+}
+
+#close-modal,
+#close-modal2 {
+    background-color: #f44336;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    float: right;
+}
+
+#close-modal:hover,
+#close-modal2:hover {
+    background-color: #d32f2f;
+}
+
+.highlight-noble-gas {
+    outline: 4px solid #2e7d32;
+    outline-offset: -2px;
+    z-index: 6;
+}
+
+/* Tablet: shrink cells, drop the element name to keep symbols legible. */
+@media (max-width: 900px) {
+    :root {
+        --cell-size: 46px;
+        --cell-gap: 3px;
+    }
+    .element .name {
+        display: none;
+    }
+}
+
+/* Phone: shrink further, drop the atomic number too. */
+@media (max-width: 520px) {
+    :root {
+        --cell-size: 34px;
+        --cell-gap: 2px;
+    }
+    .element .number {
+        display: none;
+    }
+}
